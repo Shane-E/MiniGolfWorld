@@ -191,6 +191,10 @@ MeshCollider:
   serializedVersion: 2
   m_Convex: 0
   m_Mesh: {fileID: 4300002, guid: 98be91c56fcb44bc48bdca484d432c30, type: 3}
+--- !u!1 &238667890 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 161074, guid: 7b76dfdf8224f4146ac411b39264d179, type: 2}
+  m_PrefabInternal: {fileID: 443198217}
 --- !u!1001 &443198217
 Prefab:
   m_ObjectHideFlags: 0
@@ -626,6 +630,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ball: {fileID: 1030473066}
+  hole: {fileID: 238667890}
   minHitPower: 500
   maxHitPower: 2750
 --- !u!1001 &1281591674
