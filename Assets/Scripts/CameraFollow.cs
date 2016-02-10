@@ -39,7 +39,6 @@ public class CameraFollow : MonoBehaviour {
 
             transform.RotateAround(target.transform.position, Vector3.up, xRotation);
             transform.RotateAround(target.transform.position, Vector3.right, yRotation);
-            //target.transform.Rotate(new Vector3(xRotation, 0, 0));
 
             //Allow the camera to zoom in and out it's field of view using the scroll wheel.
             viewArea = Camera.main.fieldOfView;

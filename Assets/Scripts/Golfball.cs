@@ -3,8 +3,10 @@ using System.Collections;
 
 public class Golfball : MonoBehaviour {
 	public GameObject ball = null;
+    public GameObject hole = null;
 	private bool isMoving = false;
     private float ballDrag;
+    private float distanceToHole;
 	public int minHitPower = 500;
     public int maxHitPower = 2750;
 
@@ -21,6 +23,10 @@ public class Golfball : MonoBehaviour {
             isMoving = true;
             ball.GetComponent<Rigidbody>().AddForce(new Vector3(0, 0, minHitPower));
         }
+
+        //Calculate distance to hole
+        distanceToHole = Mathf.Round((Vector3.Distance(ball.transform.position, hole.transform.position) * 100f) / 100f);
+        Debug.Log("Distance: " + distanceToHole);
     }
 
 	/*void OnMouseDown() {
@@ -33,9 +39,4 @@ public class Golfball : MonoBehaviour {
 	void OnMouseUp() {
 		//Hit ball using power level.
 	}
-
-    void OnCollisionStay()
-    {
-        
-    }
 }
