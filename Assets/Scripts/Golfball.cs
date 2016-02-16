@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Golfball : MonoBehaviour {
 	public GameObject ball = null;
     public GameObject hole = null;
-	public GameObject distance = null;
-    public UnityEngine.UI.Slider powerbar = null;
+	public Text distance;
+    public Slider powerbar;
 	private bool isMoving = false;
     private float distanceToHole;
 	public float minHitPower = 50.0f;
@@ -16,11 +17,7 @@ public class Golfball : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        //Set min and max values for power bar
-        powerbar.minValue = minHitPower;
-        powerbar.maxValue = maxHitPower;
-        powerbar.value = minHitPower;
-        hitPower = powerbar.value;
+        distance.GetComponent<Text>().text = "Distance To Hole: " + distanceToHole;
     }
 	
 	// Update is called once per frame
@@ -34,14 +31,14 @@ public class Golfball : MonoBehaviour {
 					hitPower += powerIncrement * powerMultiplier;
 				}
                 //Update the slider
-                powerbar.value = hitPower;
+                powerbar.value = hitPower / powerMultiplier;
 				Debug.Log ("Power: " + hitPower);
 			}
 
 		}
         //Calculate distance to hole
         distanceToHole = Mathf.Round((Vector3.Distance(ball.transform.position, hole.transform.position) * 100f) / 100f);
-        //Debug.Log("Distance: " + distanceToHole);
+        distance.GetComponent<Text>().text = "Distance To Hole: " + distanceToHole;
     }
 
 	void OnMouseUp() {
