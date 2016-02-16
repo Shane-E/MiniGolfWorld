@@ -5,8 +5,8 @@ public class Golfball : MonoBehaviour {
 	public GameObject ball = null;
     public GameObject hole = null;
 	public GameObject distance = null;
+    public UnityEngine.UI.Slider powerbar = null;
 	private bool isMoving = false;
-    private float ballDrag;
     private float distanceToHole;
 	public float minHitPower = 50.0f;
     public float maxHitPower = 275.0f;
@@ -16,8 +16,11 @@ public class Golfball : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        //ballDrag = ball.GetComponent<Rigidbody>().angularDrag = 1;
-		hitPower = minHitPower;
+        //Set min and max values for power bar
+        powerbar.minValue = minHitPower;
+        powerbar.maxValue = maxHitPower;
+        powerbar.value = minHitPower;
+        hitPower = powerbar.value;
     }
 	
 	// Update is called once per frame
@@ -30,6 +33,8 @@ public class Golfball : MonoBehaviour {
 				}else if (hitPower < maxHitPower) {
 					hitPower += powerIncrement * powerMultiplier;
 				}
+                //Update the slider
+                powerbar.value = hitPower;
 				Debug.Log ("Power: " + hitPower);
 			}
 
