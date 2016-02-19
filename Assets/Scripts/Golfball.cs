@@ -31,8 +31,15 @@ public class Golfball : MonoBehaviour {
 				calculatePower ();
 			}
 
-			//Debug.Log ("Ball Velocity: " + GetComponent<Rigidbody> ().velocity.magnitude);
-			Debug.Log (isMoving);
+            //Hit ball using power level and set ball to moving.
+            if (Input.GetButtonUp("Fire1"))
+            {
+                hitBall(hitPower);
+                isMoving = true;
+            }
+
+            //Debug.Log ("Ball Velocity: " + GetComponent<Rigidbody> ().velocity.magnitude);
+            //Debug.Log (isMoving);
 
 			//Detect when the ball stops
 			if (isMoving) {
@@ -52,28 +59,32 @@ public class Golfball : MonoBehaviour {
         distance.GetComponent<Text>().text = "Distance To Hole: " + distanceToHole;
     }
 
-	void OnMouseUp() {
+	/*void OnMouseUp() {
 		//Hit ball using power level and set ball to moving.
 		Debug.Log ("Selected Power: " + hitPower);
 		hitBall (hitPower);
 		isMoving = true;
-	}
+	}*/
 
 	void calculatePower(){
-		//Increase power if it is less than the max power.
-		if (increasing) {
-			if (hitPower < maxHitPower) {
-				hitPower += powerIncrement * powerMultiplier;
-				increasing = true;
-			} else if (hitPower >= maxHitPower) {
-				increasing = false;
-			}
-		}
+        //Increase power if it is less than the max power.
+        if (increasing)
+        {
+            if (hitPower < maxHitPower)
+            {
+                hitPower += powerIncrement * powerMultiplier;
+                increasing = true;
+            }
+            else if (hitPower >= maxHitPower)
+            {
+                increasing = false;
+            }
+        }
 		//Decrease power if power level is not increasing until the power hits the minimum level.
 		if(!increasing) {
-			Debug.Log ("Not Increasing");
+			//Debug.Log ("Not Increasing");
 			if (hitPower > minHitPower) {
-				Debug.Log ("HitPower: " + hitPower);
+				//Debug.Log ("HitPower: " + hitPower);
 				hitPower -= powerIncrement * powerMultiplier;
 			} else if (hitPower <= minHitPower) {
 				increasing = true;
@@ -86,8 +97,9 @@ public class Golfball : MonoBehaviour {
 	void hitBall (float power){
 		ball.GetComponent<Rigidbody>().AddForce(new Vector3(0, 0, power));
 
-		//Reset the power  and power bar level to minimum default after hitting ball
-		hitPower = minHitPower;
-		powerbar.value = hitPower;
-	}
+        //Reset the power  and power bar level to minimum default after hitting ball
+        hitPower = minHitPower;
+        powerbar.value = hitPower / powerMultiplier;
+        Debug.Log("HitPower Reset: " + hitPower);
+    }
 }

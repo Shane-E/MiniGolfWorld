@@ -13,6 +13,8 @@ public class CameraFollow : MonoBehaviour {
     private float maxView;
     private float viewChangeAmount;
 
+    private Vector3 ballMovement;
+
     // Use this for initialization
     void Start () {
 		yOffset = 2f;
