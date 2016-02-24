@@ -5,41 +5,47 @@ using UnityEngine.UI;
 public class Golfball : MonoBehaviour {
 	public GameObject ball = null;
     public GameObject hole = null;
+    public GameObject cam = null;
+    public GameObject startMat = null;
 	public Text distance;
+    public Text score;
     public Slider powerbar;
+    private int strokes = 0;
 	private bool isMoving = false;
 	private bool increasing = true;
     private float distanceToHole;
-	public float minHitPower = 40.0f;
-    public float maxHitPower = 270.0f;
+	public float minHitPower = 5.0f;
+    public float maxHitPower = 100.0f;
 	private float hitPower = 0;
-	private float powerIncrement = 5.0f;
-	private float powerMultiplier = 10;
+	private float powerIncrement = 1.0f;
+	//private float powerMultiplier = 10;
 	private float ballRollTime = 0;
+    private Vector3 ballDir;
 
     // Use this for initialization
     void Start() {
         distance.GetComponent<Text>().text = "Distance To Hole:" + distanceToHole;
 		ball.GetComponent<Rigidbody> ();
+        score.GetComponent<Text>().text = "Strokes:" + strokes;
     }
 	
 	// Update is called once per frame
 	void Update () {
         //Allow the ball to be hit if the ball is not null, not currently moving, and the left mouse button is clicked.
-		if (ball != null) {
-			if (Input.GetButton("Fire1") && !isMoving) {
+        if (ball != null) {
+            
+            if (Input.GetButton("Fire1") && !isMoving) {
 				calculatePower ();
-			}
+            }
 
             //Hit ball using power level and set ball to moving.
             if (Input.GetButtonUp("Fire1"))
             {
+                //Calculate direction to hit ball
+                ballDir = cam.transform.forward.normalized;
                 hitBall(hitPower);
                 isMoving = true;
             }
-
-            //Debug.Log ("Ball Velocity: " + GetComponent<Rigidbody> ().velocity.magnitude);
-            //Debug.Log (isMoving);
 
 			//Detect when the ball stops
 			if (isMoving) {
@@ -52,19 +58,19 @@ public class Golfball : MonoBehaviour {
 			} else {
 				ballRollTime = 0;
 			}
-
 		}
         //Calculate distance to hole
         distanceToHole = Mathf.Round((Vector3.Distance(ball.transform.position, hole.transform.position) * 100f) / 100f);
         distance.GetComponent<Text>().text = "Distance To Hole: " + distanceToHole;
-    }
 
-	/*void OnMouseUp() {
-		//Hit ball using power level and set ball to moving.
-		Debug.Log ("Selected Power: " + hitPower);
-		hitBall (hitPower);
-		isMoving = true;
-	}*/
+        Debug.DrawLine(ball.transform.position, ballDir, Color.red, Mathf.Infinity);
+
+        //Detect if ball is in the hole
+        if(ball.transform.position.y < 8.0f)
+        {
+            resetBall();
+        }
+    }
 
 	void calculatePower(){
         //Increase power if it is less than the max power.
@@ -72,7 +78,8 @@ public class Golfball : MonoBehaviour {
         {
             if (hitPower < maxHitPower)
             {
-                hitPower += powerIncrement * powerMultiplier;
+                //hitPower += powerIncrement * powerMultiplier;
+                hitPower += powerIncrement;
                 increasing = true;
             }
             else if (hitPower >= maxHitPower)
@@ -84,22 +91,48 @@ public class Golfball : MonoBehaviour {
 		if(!increasing) {
 			//Debug.Log ("Not Increasing");
 			if (hitPower > minHitPower) {
-				//Debug.Log ("HitPower: " + hitPower);
-				hitPower -= powerIncrement * powerMultiplier;
+                //Debug.Log ("HitPower: " + hitPower);
+                //hitPower -= powerIncrement * powerMultiplier;
+                hitPower -= powerIncrement;
 			} else if (hitPower <= minHitPower) {
 				increasing = true;
 			}
 		}
-		//Update the slider
-		powerbar.value = hitPower / powerMultiplier;
+        //Update the slider
+        //powerbar.value = hitPower / powerMultiplier;
+        powerbar.value = hitPower;
 	}
 
 	void hitBall (float power){
-		ball.GetComponent<Rigidbody>().AddForce(new Vector3(0, 0, power));
+
+        //Add force to the ball
+        //ball.GetComponent<Rigidbody>().AddForce(new Vector3(0, 0, power));
+        //Camera.main.transform.forward
+        ballDir.y = 0;
+        ball.GetComponent<Rigidbody>().AddRelativeForce(ballDir * power, ForceMode.Impulse);
+
+        //Increase stroke count
+        strokes++;
+        updateScore(strokes);
 
         //Reset the power  and power bar level to minimum default after hitting ball
         hitPower = minHitPower;
-        powerbar.value = hitPower / powerMultiplier;
+        //powerbar.value = hitPower / powerMultiplier;
+        powerbar.value = hitPower;
         Debug.Log("HitPower Reset: " + hitPower);
+    }
+
+    void updateScore(int stroke)
+    {
+        score.GetComponent<Text>().text = "Strokes:" + stroke;
+    }
+
+    void resetBall()
+    {
+        //Teleport ball to start mat position and stop its movement.
+        ball.transform.position = new Vector3(startMat.transform.position.x, 9.0f, startMat.transform.position.z);
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+
     }
 }

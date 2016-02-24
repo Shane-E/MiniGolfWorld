@@ -12,8 +12,7 @@ public class CameraFollow : MonoBehaviour {
     private float minView;
     private float maxView;
     private float viewChangeAmount;
-
-    private Vector3 ballMovement;
+    public Vector3 ballDir;
 
     // Use this for initialization
     void Start () {
@@ -41,6 +40,11 @@ public class CameraFollow : MonoBehaviour {
 
             transform.RotateAround(target.transform.position, Vector3.up, xRotation);
             transform.RotateAround(target.transform.position, Vector3.right, yRotation);
+
+            //ballDir = Camera.main.transform.forward.normalized;
+            //ballDir.y = 0.0f;
+            //Debug.Log(ballDir);
+            //Debug.DrawLine(target.transform.position, ballDir, Color.red, Mathf.Infinity);
 
             //Allow the camera to zoom in and out it's field of view using the scroll wheel.
             viewArea = Camera.main.fieldOfView;
