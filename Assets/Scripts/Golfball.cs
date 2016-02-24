@@ -10,6 +10,7 @@ public class Golfball : MonoBehaviour {
 	public Text distance;
     public Text score;
     public Slider powerbar;
+	public AudioClip hitSound = null;
     private int strokes = 0;
 	private bool isMoving = false;
 	private bool increasing = true;
@@ -17,7 +18,7 @@ public class Golfball : MonoBehaviour {
 	public float minHitPower = 5.0f;
     public float maxHitPower = 100.0f;
 	private float hitPower = 0;
-	private float powerIncrement = 1.0f;
+	private float powerIncrement = 2.0f;
 	//private float powerMultiplier = 10;
 	private float ballRollTime = 0;
     private Vector3 ballDir;
@@ -27,6 +28,10 @@ public class Golfball : MonoBehaviour {
         distance.GetComponent<Text>().text = "Distance To Hole:" + distanceToHole;
 		ball.GetComponent<Rigidbody> ();
         score.GetComponent<Text>().text = "Strokes:" + strokes;
+
+		//Setup powerbar values
+		powerbar.minValue = minHitPower;
+		powerbar.maxValue = maxHitPower;
     }
 	
 	// Update is called once per frame
@@ -66,10 +71,12 @@ public class Golfball : MonoBehaviour {
         Debug.DrawLine(ball.transform.position, ballDir, Color.red, Mathf.Infinity);
 
         //Detect if ball is in the hole
-        if(ball.transform.position.y < 8.0f)
-        {
-            resetBall();
-        }
+		/*NEEDS WORK, ALWAYS HITS WIN CONDITION EVEN WHEN BALL IS LAUNCHED OFF LEVEL*/
+		if (ball.transform.position.y < 0.0f) {
+			resetBall ();
+		}else if(ball.transform.position.y > 6.0f && ball.transform.position.y < 8.0f){
+			winHole ();
+		}
     }
 
 	void calculatePower(){
@@ -81,6 +88,12 @@ public class Golfball : MonoBehaviour {
                 //hitPower += powerIncrement * powerMultiplier;
                 hitPower += powerIncrement;
                 increasing = true;
+				//Increase difficulty for high power shots
+				if(hitPower > maxHitPower/2){
+					powerIncrement = 4;
+				}else{
+					powerIncrement = 2;
+				}
             }
             else if (hitPower >= maxHitPower)
             {
@@ -105,15 +118,19 @@ public class Golfball : MonoBehaviour {
 
 	void hitBall (float power){
 
+		//Play Hit Audio
+		playHitSound();
+
         //Add force to the ball
         //ball.GetComponent<Rigidbody>().AddForce(new Vector3(0, 0, power));
         //Camera.main.transform.forward
         ballDir.y = 0;
-        ball.GetComponent<Rigidbody>().AddRelativeForce(ballDir * power, ForceMode.Impulse);
+		ball.GetComponent<Rigidbody>().AddRelativeForce(ballDir * power, ForceMode.Impulse);
 
         //Increase stroke count
         strokes++;
-        updateScore(strokes);
+		//Update the stroke score text
+		updateScore(strokes);
 
         //Reset the power  and power bar level to minimum default after hitting ball
         hitPower = minHitPower;
@@ -129,10 +146,34 @@ public class Golfball : MonoBehaviour {
 
     void resetBall()
     {
+		Debug.Log ("Out of Bounds!");
+
         //Teleport ball to start mat position and stop its movement.
         ball.transform.position = new Vector3(startMat.transform.position.x, 9.0f, startMat.transform.position.z);
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 
     }
+
+	void winHole()
+	{
+		Debug.Log ("You Win! \n Stroke Count: " + strokes);
+
+		//Reset Stroke Count
+		strokes = 0;
+
+		//Teleport ball to start mat position and stop its movement.
+		ball.transform.position = new Vector3(startMat.transform.position.x, 9.0f, startMat.transform.position.z);
+		GetComponent<Rigidbody>().velocity = Vector3.zero;
+		GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+
+	}
+
+	void playHitSound(){
+		if (hitSound != null) {
+			GetComponent<AudioSource> ().PlayOneShot (hitSound, 0.7f);
+		} else {
+			Debug.Log ("Error playing sound.");
+		}
+	}
 }
