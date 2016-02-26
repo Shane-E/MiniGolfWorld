@@ -11,12 +11,13 @@ public class Golfball : MonoBehaviour {
     public Text score;
     public Slider powerbar;
 	public AudioClip hitSound = null;
+    public AudioClip holeSound = null;
     private int strokes = 0;
 	private bool isMoving = false;
 	private bool increasing = true;
     private float distanceToHole;
 	public float minHitPower = 5.0f;
-    public float maxHitPower = 100.0f;
+    public float maxHitPower = 85.0f;
 	private float hitPower = 0;
 	private float powerIncrement = 2.0f;
 	//private float powerMultiplier = 10;
@@ -26,7 +27,6 @@ public class Golfball : MonoBehaviour {
     // Use this for initialization
     void Start() {
         distance.GetComponent<Text>().text = "Distance To Hole:" + distanceToHole;
-		ball.GetComponent<Rigidbody> ();
         score.GetComponent<Text>().text = "Strokes:" + strokes;
 
 		//Setup powerbar values
@@ -44,7 +44,7 @@ public class Golfball : MonoBehaviour {
             }
 
             //Hit ball using power level and set ball to moving.
-            if (Input.GetButtonUp("Fire1"))
+            if (Input.GetButtonUp("Fire1") && !isMoving)
             {
                 //Calculate direction to hit ball
                 ballDir = cam.transform.forward.normalized;
@@ -65,17 +65,15 @@ public class Golfball : MonoBehaviour {
 			}
 		}
         //Calculate distance to hole
-        distanceToHole = Mathf.Round((Vector3.Distance(ball.transform.position, hole.transform.position) * 100f) / 100f);
-        distance.GetComponent<Text>().text = "Distance To Hole: " + distanceToHole;
-
-        Debug.DrawLine(ball.transform.position, ballDir, Color.red, Mathf.Infinity);
+        calculateHoleDistance();
 
         //Detect if ball is in the hole
 		/*NEEDS WORK, ALWAYS HITS WIN CONDITION EVEN WHEN BALL IS LAUNCHED OFF LEVEL*/
 		if (ball.transform.position.y < 0.0f) {
 			resetBall ();
 		}else if(ball.transform.position.y > 6.0f && ball.transform.position.y < 8.0f){
-			winHole ();
+            playHoleSound();
+            winHole ();
 		}
     }
 
@@ -139,6 +137,12 @@ public class Golfball : MonoBehaviour {
         Debug.Log("HitPower Reset: " + hitPower);
     }
 
+    void calculateHoleDistance()
+    {
+        distanceToHole = Mathf.Round((Vector3.Distance(ball.transform.position, hole.transform.position) * 100f) / 100f);
+        distance.GetComponent<Text>().text = "Distance To Hole: " + distanceToHole;
+    }
+
     void updateScore(int stroke)
     {
         score.GetComponent<Text>().text = "Strokes:" + stroke;
@@ -173,7 +177,19 @@ public class Golfball : MonoBehaviour {
 		if (hitSound != null) {
 			GetComponent<AudioSource> ().PlayOneShot (hitSound, 0.7f);
 		} else {
-			Debug.Log ("Error playing sound.");
+			Debug.Log ("Error playing hit sound.");
 		}
 	}
+
+    void playHoleSound()
+    {
+        if(holeSound != null)
+        {
+            GetComponent<AudioSource>().PlayOneShot(holeSound, 0.7f);
+        }
+        else
+        {
+            Debug.Log("Error playing hole sound");
+        }
+    }
 }
