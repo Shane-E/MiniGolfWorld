@@ -41,7 +41,7 @@ RenderSettings:
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 6
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_LightmapsMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -66,7 +66,8 @@ LightmapSettings:
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
     m_ReflectionCompression: 2
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000013, guid: dec49e8a8adeb4d8187b293160fc35f1,
+    type: 2}
   m_RuntimeCPUUsage: 25
 --- !u!196 &4
 NavMeshSettings:
@@ -250,11 +251,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 400000, guid: c63a542619dc94c15b22ec8c17081cdf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.12
+      value: -0.08
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: c63a542619dc94c15b22ec8c17081cdf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 10
+      value: 9.5
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: c63a542619dc94c15b22ec8c17081cdf, type: 3}
       propertyPath: m_LocalPosition.z
@@ -282,15 +283,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: c63a542619dc94c15b22ec8c17081cdf, type: 3}
       propertyPath: m_LocalScale.x
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: c63a542619dc94c15b22ec8c17081cdf, type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: c63a542619dc94c15b22ec8c17081cdf, type: 3}
       propertyPath: m_LocalScale.z
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c63a542619dc94c15b22ec8c17081cdf, type: 3}
@@ -774,8 +775,10 @@ MonoBehaviour:
   startMat: {fileID: 1987293835}
   distance: {fileID: 82281158}
   score: {fileID: 1030607684}
+  name: {fileID: 0}
   powerbar: {fileID: 89219819}
   hitSound: {fileID: 8300000, guid: a7004710a1250429c97cedf4b3611914, type: 3}
+  holeSound: {fileID: 0}
   minHitPower: 5
   maxHitPower: 85
 --- !u!1 &1030607682
@@ -982,7 +985,7 @@ Transform:
   - {fileID: 843517089}
   - {fileID: 996547973}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!1001 &1329789477
 Prefab:
   m_ObjectHideFlags: 0
@@ -1265,7 +1268,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!114 &1764055022
 MonoBehaviour:
   m_ObjectHideFlags: 0

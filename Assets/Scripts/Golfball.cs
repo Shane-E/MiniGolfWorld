@@ -9,6 +9,7 @@ public class Golfball : MonoBehaviour {
     public GameObject startMat = null;
 	public Text distance;
     public Text score;
+	public Text name;
     public Slider powerbar;
 	public AudioClip hitSound = null;
     public AudioClip holeSound = null;
@@ -28,6 +29,7 @@ public class Golfball : MonoBehaviour {
     void Start() {
         distance.GetComponent<Text>().text = "Distance To Hole:" + distanceToHole;
         score.GetComponent<Text>().text = "Strokes:" + strokes;
+		name.GetComponent<Text> ().text = PlayerPrefs.GetString("playerName");
 
 		//Setup powerbar values
 		powerbar.minValue = minHitPower;
