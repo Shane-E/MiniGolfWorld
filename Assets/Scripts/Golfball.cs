@@ -7,6 +7,7 @@ public class Golfball : MonoBehaviour {
     public GameObject hole = null;
     public GameObject cam = null;
     public GameObject startMat = null;
+	public GameObject ballPointer = null;
 	public Text distance;
     public Text score;
 	public Text name;
@@ -34,13 +35,15 @@ public class Golfball : MonoBehaviour {
 		//Setup powerbar values
 		powerbar.minValue = minHitPower;
 		powerbar.maxValue = maxHitPower;
+
+		//Ball pointer display
+		ballPointer.SetActive (true);
     }
 	
 	// Update is called once per frame
 	void Update () {
         //Allow the ball to be hit if the ball is not null, not currently moving, and the left mouse button is clicked.
         if (ball != null) {
-            
             if (Input.GetButton("Fire1") && !isMoving) {
 				calculatePower ();
             }
@@ -49,6 +52,7 @@ public class Golfball : MonoBehaviour {
             if (Input.GetButtonUp("Fire1") && !isMoving)
             {
                 //Calculate direction to hit ball
+				//TODO Make pointer invisible
                 ballDir = cam.transform.forward.normalized;
                 hitBall(hitPower);
                 isMoving = true;
@@ -56,6 +60,8 @@ public class Golfball : MonoBehaviour {
 
 			//Detect when the ball stops
 			if (isMoving) {
+				//The ball pointer is invisible while the ball is in motion
+				ballPointer.SetActive (false);
 				ballRollTime += Time.deltaTime;
 				if (ballRollTime > 1 && GetComponent<Rigidbody> ().velocity.magnitude <= 0.5) {
 					GetComponent<Rigidbody> ().velocity = Vector3.zero;
@@ -63,6 +69,8 @@ public class Golfball : MonoBehaviour {
 					isMoving = false;
 				}
 			} else {
+				//View the pointer when the ball has stopped.
+				ballPointer.SetActive (true);
 				ballRollTime = 0;
 			}
 		}
@@ -194,4 +202,8 @@ public class Golfball : MonoBehaviour {
             Debug.Log("Error playing hole sound");
         }
     }
+
+	public bool getBallMovement(){
+		return isMoving;
+	}
 }

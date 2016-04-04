@@ -3,6 +3,7 @@ using System.Collections;
 
 public class CameraFollow : MonoBehaviour {
 	public GameObject target = null;
+	public GameObject ballPointer = null;
     public float viewArea;
 	private float yOffset;
 	private float zOffset;
@@ -35,6 +36,9 @@ public class CameraFollow : MonoBehaviour {
             {
                 xRotation += Input.GetAxis("Mouse X") * rotateSpeed;
                 yRotation += Input.GetAxis("Mouse Y") * rotateSpeed;
+
+				//Rotate ball pointer based on camera direction
+				ballPointer.transform.eulerAngles = new Vector3 (0, transform.eulerAngles.y, 0);
             }
 
             transform.RotateAround(target.transform.position, Vector3.up, xRotation);
