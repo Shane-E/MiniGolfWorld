@@ -4,11 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Game
   - Hole
   - enemy
   - gameScript
   - GolfMat
+  - Manager
+  - DistanceToHole
   layers:
   - Default
   - TransparentFX

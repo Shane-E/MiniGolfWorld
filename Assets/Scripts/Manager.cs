@@ -9,11 +9,14 @@ public class Manager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		DontDestroyOnLoad (this);
+
 		Debug.Log (SceneManager.GetActiveScene ().buildIndex);
 		//Check if the scene is the main menu
-		if (SceneManager.GetActiveScene ().buildIndex == 0) {
+		if (getCurrentLevel() == 0) {
 			//Delete previously stored player name to create a new player.
 			PlayerPrefs.DeleteKey ("playerName");
+			PlayerPrefs.DeleteKey ("totalScore");
 		}
 	}
 	
@@ -45,5 +48,9 @@ public class Manager : MonoBehaviour {
 
 	public string getPlayerName(){
 		return playerName;
+	}
+
+	public int getCurrentLevel(){
+		return SceneManager.GetActiveScene ().buildIndex;
 	}
 }

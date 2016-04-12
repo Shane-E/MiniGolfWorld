@@ -1472,12 +1472,13 @@ MonoBehaviour:
   cam: {fileID: 1764055016}
   startMat: {fileID: 1987293835}
   ballPointer: {fileID: 298790033}
-  distance: {fileID: 970364193}
-  score: {fileID: 1641845869}
-  name: {fileID: 1779628511}
-  powerbar: {fileID: 1557220679}
+  distance: {fileID: 0}
+  score: {fileID: 0}
+  name: {fileID: 0}
+  powerbar: {fileID: 0}
   hitSound: {fileID: 8300000, guid: a7004710a1250429c97cedf4b3611914, type: 3}
   holeSound: {fileID: 8300000, guid: 594ddc6a53aa54507bea2bd6679217ae, type: 3}
+  scoreboard: {fileID: 0}
   minHitPower: 5
   maxHitPower: 85
 --- !u!1 &1070985667

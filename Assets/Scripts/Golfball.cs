@@ -8,15 +8,18 @@ public class Golfball : MonoBehaviour {
     public GameObject cam = null;
     public GameObject startMat = null;
 	public GameObject ballPointer = null;
+	private Manager gameManager;
 	public Text distance;
     public Text score;
 	public Text name;
     public Slider powerbar;
 	public AudioClip hitSound = null;
     public AudioClip holeSound = null;
+	public Leaderboard scoreboard;
     private int strokes = 0;
 	private bool isMoving = false;
 	private bool increasing = true;
+	private bool holeWon = false;
     private float distanceToHole;
 	public float minHitPower = 5.0f;
     public float maxHitPower = 85.0f;
@@ -28,6 +31,13 @@ public class Golfball : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+		gameManager = GameObject.Find ("GameManager").GetComponent<Manager> ();
+		distance = GameObject.Find ("DistanceToHole").GetComponent<Text> ();
+		score = GameObject.Find ("Score").GetComponent<Text> ();
+		name = GameObject.Find ("Name").GetComponent<Text> ();
+		powerbar = GameObject.Find ("PowerSlider").GetComponent<Slider> ();
+		scoreboard = GameObject.Find ("Leaderboard").GetComponent<Leaderboard> ();
+
         distance.GetComponent<Text>().text = "Distance To Hole:" + distanceToHole;
         score.GetComponent<Text>().text = "Strokes:" + strokes;
 		name.GetComponent<Text> ().text = PlayerPrefs.GetString("playerName");
@@ -38,6 +48,11 @@ public class Golfball : MonoBehaviour {
 
 		//Ball pointer display
 		ballPointer.SetActive (true);
+
+		updateLeaderboard (gameManager.getCurrentLevel(), strokes);
+
+		Debug.Log ("Hole Y Position: " + hole.transform.position.y);
+		Debug.Log ("Hole X Position: " + hole.transform.position.x);
     }
 	
 	// Update is called once per frame
@@ -52,7 +67,6 @@ public class Golfball : MonoBehaviour {
             if (Input.GetButtonUp("Fire1") && !isMoving)
             {
                 //Calculate direction to hit ball
-				//TODO Make pointer invisible
                 ballDir = cam.transform.forward.normalized;
                 hitBall(hitPower);
                 isMoving = true;
@@ -78,12 +92,12 @@ public class Golfball : MonoBehaviour {
         calculateHoleDistance();
 
         //Detect if ball is in the hole
-		/*NEEDS WORK, ALWAYS HITS WIN CONDITION EVEN WHEN BALL IS LAUNCHED OFF LEVEL*/
-		if (ball.transform.position.y < 0.0f) {
+		if(Vector3.Distance(ball.transform.position, hole.transform.position) < 0.75f) {
+			playHoleSound();
+			winHole ();
+		}else if (ball.transform.position.y < 0.0f){
 			resetBall ();
-		}else if(ball.transform.position.y > 6.0f && ball.transform.position.y < 8.0f){
-            playHoleSound();
-            winHole ();
+			//TODO Play Sound For Out Of Bounds
 		}
     }
 
@@ -139,6 +153,7 @@ public class Golfball : MonoBehaviour {
         strokes++;
 		//Update the stroke score text
 		updateScore(strokes);
+		updateLeaderboard (gameManager.getCurrentLevel(), strokes);
 
         //Reset the power  and power bar level to minimum default after hitting ball
         hitPower = minHitPower;
@@ -166,21 +181,17 @@ public class Golfball : MonoBehaviour {
         ball.transform.position = new Vector3(startMat.transform.position.x, 9.0f, startMat.transform.position.z);
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-
     }
 
 	void winHole()
 	{
-		Debug.Log ("You Win! \n Stroke Count: " + strokes);
+		//Debug.Log ("You Win! \n Stroke Count: " + strokes);
 
 		//Reset Stroke Count
 		strokes = 0;
-
-		//Teleport ball to start mat position and stop its movement.
-		ball.transform.position = new Vector3(startMat.transform.position.x, 9.0f, startMat.transform.position.z);
-		GetComponent<Rigidbody>().velocity = Vector3.zero;
-		GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-
+		//TODO Conditional to tell when the game has ended to show final scores.
+		//Go to the next level
+		gameManager.changeLevel (gameManager.getCurrentLevel () + 1);
 	}
 
 	void playHitSound(){
@@ -205,5 +216,44 @@ public class Golfball : MonoBehaviour {
 
 	public bool getBallMovement(){
 		return isMoving;
+	}
+
+	public bool getWinCondition(){
+		return holeWon;
+	}
+
+	void updateLeaderboard(int level, int score){
+		Debug.Log ("Updating scoreboard hole " + level + " to score of " + score);
+		switch (level)
+		{
+		case 1:
+			scoreboard.GetComponent<Leaderboard> ().hole1Score.text = score.ToString();
+			break;
+		case 2:
+			//Update the score text color to green for the previous hole.
+			scoreboard.GetComponent<Leaderboard>().hole1Score.color = new Color(0f, 0.94f, 0.07f);
+
+			scoreboard.GetComponent<Leaderboard> ().hole2Score.text = score.ToString();
+			break;
+		case 3:
+			//Update the score text color to green for the previous hole.
+			scoreboard.GetComponent<Leaderboard>().hole2Score.color = new Color(0f, 0.94f, 0.07f);
+
+			scoreboard.GetComponent<Leaderboard> ().hole3Score.text = score.ToString();
+			break;
+		case 4:
+			//Update the score text color to green for the previous hole.
+			scoreboard.GetComponent<Leaderboard>().hole3Score.color = new Color(0f, 0.94f, 0.07f);
+
+			scoreboard.GetComponent<Leaderboard> ().hole4Score.text = score.ToString();
+			break;
+		default:
+			scoreboard.GetComponent<Leaderboard> ().hole1Score.text = "0";
+			scoreboard.GetComponent<Leaderboard> ().hole2Score.text = "0";
+			scoreboard.GetComponent<Leaderboard> ().hole3Score.text = "0";
+			scoreboard.GetComponent<Leaderboard> ().hole4Score.text = "0";
+			break;
+		}
+		scoreboard.GetComponent<Leaderboard> ().totalScore.text = "?";
 	}
 }
