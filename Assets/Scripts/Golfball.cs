@@ -15,7 +15,7 @@ public class Golfball : MonoBehaviour {
     public Slider powerbar;
 	public AudioClip hitSound = null;
     public AudioClip holeSound = null;
-	public Leaderboard scoreboard;
+	//public Leaderboard scoreboard;
 	private int scoreTotal;
     private int strokes = 0;
 	private bool isMoving = false;
@@ -37,7 +37,7 @@ public class Golfball : MonoBehaviour {
 		score = GameObject.Find ("Score").GetComponent<Text> ();
 		name = GameObject.Find ("Name").GetComponent<Text> ();
 		powerbar = GameObject.Find ("PowerSlider").GetComponent<Slider> ();
-		scoreboard = GameObject.Find ("Leaderboard").GetComponent<Leaderboard> ();
+		gameManager.scoreboard = GameObject.Find ("Leaderboard").GetComponent<Leaderboard> ();
 
         distance.GetComponent<Text>().text = "Distance To Hole:" + distanceToHole;
         score.GetComponent<Text>().text = "Strokes:" + strokes;
@@ -52,7 +52,7 @@ public class Golfball : MonoBehaviour {
 
 
 		scoreTotal = PlayerPrefs.GetInt("totalScore");
-		updateLeaderboard (gameManager.getCurrentLevel(), strokes, scoreTotal);
+		gameManager.scoreboard.updateLeaderboard (gameManager.getCurrentLevel(), strokes, scoreTotal);
 
 		Debug.Log ("Beginning of level total: " + scoreTotal);
 		//Debug.Log ("Hole Y Position: " + hole.transform.position.y);
@@ -158,7 +158,7 @@ public class Golfball : MonoBehaviour {
 
 		//Update the stroke score text for quick UI and scoreboard
 		updateScore(strokes);
-		updateLeaderboard (gameManager.getCurrentLevel (), strokes, scoreTotal);
+		gameManager.scoreboard.updateLeaderboard (gameManager.getCurrentLevel (), strokes, scoreTotal);
 
         //Reset the power  and power bar level to minimum default after hitting ball
         hitPower = minHitPower;
@@ -194,6 +194,8 @@ public class Golfball : MonoBehaviour {
 		//Update and save total score
 		scoreTotal += strokes;
 		PlayerPrefs.SetInt("totalScore", scoreTotal);
+
+		PlayerPrefs.SetInt (gameManager.getHoleName (), strokes);
 
 		//Reset Stroke Count
 		strokes = 0;
@@ -238,7 +240,7 @@ public class Golfball : MonoBehaviour {
 		return holeWon;
 	}
 
-	void updateLeaderboard(int level, int score, int total){
+	/*void updateLeaderboard(int level, int score, int total){
 		Debug.Log ("Updating scoreboard hole " + level + " to score of " + score);
 		Debug.Log ("Total Score: " + PlayerPrefs.GetInt("totalScore"));
 		scoreboard.GetComponent<Leaderboard> ().totalScore.text = total.ToString ();
@@ -272,5 +274,5 @@ public class Golfball : MonoBehaviour {
 			scoreboard.GetComponent<Leaderboard> ().hole4Score.text = "0";
 			break;
 		}
-	}
+	}*/
 }

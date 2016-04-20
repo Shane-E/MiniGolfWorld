@@ -9,6 +9,7 @@ TagManager:
   - gameScript
   - GolfMat
   - Manager
+  - IngameCanvas
   layers:
   - Default
   - TransparentFX

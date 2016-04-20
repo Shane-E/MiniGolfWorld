@@ -5,7 +5,9 @@ using System.Collections;
 
 public class Manager : MonoBehaviour {
 	public InputField nameInput = null;
-	string playerName;
+	public Leaderboard scoreboard;
+	public Button restart;
+	string playerName, holeName;
 
 	// Use this for initialization
 	void Start () {
@@ -17,24 +19,28 @@ public class Manager : MonoBehaviour {
 		//Check if the scene is the main menu
 		if (getCurrentLevel() == 0) {
 			//Delete previously stored player name to create a new player.
-			PlayerPrefs.DeleteKey ("playerName");
-			PlayerPrefs.DeleteKey ("totalScore");
+			//PlayerPrefs.DeleteKey ("playerName");
+			//PlayerPrefs.DeleteKey ("totalScore");
+			PlayerPrefs.DeleteAll();
 		}
+		holeName = "Hole" + (getCurrentLevel () + 1);
+		Debug.Log ("Hole Name: " + holeName);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (SceneManager.GetActiveScene ().buildIndex == (SceneManager.sceneCountInBuildSettings - 1)) {
-
-		}
+		
 	}
 
 	//Changes the level to the string named scene defined in the parameter.
 	public void changeLevel(int levelName){
 		SceneManager.LoadScene (levelName);
+		holeName = "Hole" + (getCurrentLevel () + 1);
+		Debug.Log ("Hole Name: " + holeName);
 	}
 
 	public void startButtonClicked(){
+		PlayerPrefs.DeleteAll();
 		//Get and store the new player name.
 		if (nameInput.text == "" || nameInput.text == null) {
 			Debug.Log ("No Input.");
@@ -50,6 +56,16 @@ public class Manager : MonoBehaviour {
 		
 	}
 
+	//Load the instructions scene
+	public void instructionsButtonClicked(){
+		SceneManager.LoadScene ("7_Instructions");
+	}
+
+	public void restartGame(){
+		Destroy (GameObject.Find("GameManager")); //Cleanup leftover game manager from previous game
+		changeLevel (0);
+	}
+
 	public string getPlayerName(){
 		return playerName;
 	}
@@ -61,5 +77,9 @@ public class Manager : MonoBehaviour {
 	public int getTotalLevels(){
 		int totalLevels = SceneManager.sceneCountInBuildSettings;
 		return totalLevels;
+	}
+
+	public string getHoleName(){
+		return holeName;
 	}
 }
