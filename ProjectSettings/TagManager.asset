@@ -9,7 +9,6 @@ TagManager:
   - gameScript
   - GolfMat
   - Manager
-  - DistanceToHole
   layers:
   - Default
   - TransparentFX

@@ -13,3 +13,7 @@ EditorBuildSettings:
     path: Assets/Scenes/3_Hole2.unity
   - enabled: 1
     path: Assets/Scenes/4_Hole3.unity
+  - enabled: 1
+    path: Assets/Scenes/5_Hole4.unity
+  - enabled: 1
+    path: Assets/Scenes/6_EndGame.unity

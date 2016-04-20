@@ -16,6 +16,7 @@ public class Golfball : MonoBehaviour {
 	public AudioClip hitSound = null;
     public AudioClip holeSound = null;
 	public Leaderboard scoreboard;
+	private int scoreTotal;
     private int strokes = 0;
 	private bool isMoving = false;
 	private bool increasing = true;
@@ -49,10 +50,13 @@ public class Golfball : MonoBehaviour {
 		//Ball pointer display
 		ballPointer.SetActive (true);
 
-		updateLeaderboard (gameManager.getCurrentLevel(), strokes);
 
-		Debug.Log ("Hole Y Position: " + hole.transform.position.y);
-		Debug.Log ("Hole X Position: " + hole.transform.position.x);
+		scoreTotal = PlayerPrefs.GetInt("totalScore");
+		updateLeaderboard (gameManager.getCurrentLevel(), strokes, scoreTotal);
+
+		Debug.Log ("Beginning of level total: " + scoreTotal);
+		//Debug.Log ("Hole Y Position: " + hole.transform.position.y);
+		//Debug.Log ("Hole X Position: " + hole.transform.position.x);
     }
 	
 	// Update is called once per frame
@@ -151,15 +155,16 @@ public class Golfball : MonoBehaviour {
 
         //Increase stroke count
         strokes++;
-		//Update the stroke score text
+
+		//Update the stroke score text for quick UI and scoreboard
 		updateScore(strokes);
-		updateLeaderboard (gameManager.getCurrentLevel(), strokes);
+		updateLeaderboard (gameManager.getCurrentLevel (), strokes, scoreTotal);
 
         //Reset the power  and power bar level to minimum default after hitting ball
         hitPower = minHitPower;
         //powerbar.value = hitPower / powerMultiplier;
         powerbar.value = hitPower;
-        Debug.Log("HitPower Reset: " + hitPower);
+        //Debug.Log("HitPower Reset: " + hitPower);
     }
 
     void calculateHoleDistance()
@@ -186,12 +191,23 @@ public class Golfball : MonoBehaviour {
 	void winHole()
 	{
 		//Debug.Log ("You Win! \n Stroke Count: " + strokes);
+		//Update and save total score
+		scoreTotal += strokes;
+		PlayerPrefs.SetInt("totalScore", scoreTotal);
 
 		//Reset Stroke Count
 		strokes = 0;
-		//TODO Conditional to tell when the game has ended to show final scores.
-		//Go to the next level
-		gameManager.changeLevel (gameManager.getCurrentLevel () + 1);
+
+		//Conditional to tell when the game has ended to show final scores.
+		if (gameManager.getCurrentLevel () < gameManager.getTotalLevels () - 1) {
+			//Go to the next level
+			Debug.Log("Changing to level " + (gameManager.getCurrentLevel() + 1));
+			gameManager.changeLevel (gameManager.getCurrentLevel () + 1);
+		} else {
+			//Go to end scene
+			Debug.Log("Changing to last level.");
+			gameManager.changeLevel (gameManager.getTotalLevels() - 1);
+		}
 	}
 
 	void playHitSound(){
@@ -222,8 +238,10 @@ public class Golfball : MonoBehaviour {
 		return holeWon;
 	}
 
-	void updateLeaderboard(int level, int score){
+	void updateLeaderboard(int level, int score, int total){
 		Debug.Log ("Updating scoreboard hole " + level + " to score of " + score);
+		Debug.Log ("Total Score: " + PlayerPrefs.GetInt("totalScore"));
+		scoreboard.GetComponent<Leaderboard> ().totalScore.text = total.ToString ();
 		switch (level)
 		{
 		case 1:
@@ -254,6 +272,5 @@ public class Golfball : MonoBehaviour {
 			scoreboard.GetComponent<Leaderboard> ().hole4Score.text = "0";
 			break;
 		}
-		scoreboard.GetComponent<Leaderboard> ().totalScore.text = "?";
 	}
 }

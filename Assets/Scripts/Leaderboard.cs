@@ -5,10 +5,12 @@ using System.Collections;
 public class Leaderboard : MonoBehaviour {
 	CanvasGroup cg;
 	public Text name, hole1Score, hole2Score, hole3Score, hole4Score, totalScore;
+	private Manager gameManager;
 
 	// Use this for initialization
 	void Start () {
 		DontDestroyOnLoad (GameObject.Find("Canvas"));
+		gameManager = GameObject.Find ("GameManager").GetComponent<Manager> ();
 
 		//Setup leaderboard and set it to be invisible and disabled
 		cg = GetComponent<CanvasGroup>();
@@ -23,6 +25,10 @@ public class Leaderboard : MonoBehaviour {
 	void Update () {
 		//Show or hide the game scoreboard.
 		displayScoreboard();
+		if (gameManager.getCurrentLevel () == (gameManager.getTotalLevels () - 1)) {
+			drawEndScoreboard ();
+			cg.alpha = 1.0f;
+		}
 	}
 
 	void displayScoreboard(){
@@ -32,5 +38,10 @@ public class Leaderboard : MonoBehaviour {
 		} else {
 			cg.alpha -= 0.1f;
 		}
+	}
+
+	//Draw the background, game title, and return to main menu button
+	void drawEndScoreboard(){
+
 	}
 }
